@@ -1,0 +1,28 @@
+.header {
+    height: 110px;
+    // background-color: #096dd9;
+    &--title {
+        font-size: 1.2em;
+        background-color: #f3ec78;
+        background-image: linear-gradient(45deg, #061178, #1890ff);
+        background-size: 100%;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent; 
+        -moz-text-fill-color: transparent;
+    }
+    .ant-row {
+        height: 100%;
+    }
+    border-bottom: 1px solid #d9d9d9;
+    // .ant-menu {
+    //     background-color: #096dd9;
+    // }
+    // .ant-menu-item {
+    //     background-color: #096dd9;
+    //     color: white;
+    //     &:hover {
+    //         color: black;
+    //     }
+    // }
+}
