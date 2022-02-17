@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/bootstrap";
+
+.text-translation {
+    .ant-card-head-title {
+        height: 4em;
+        /* font-size: 1.5em; */
+    }
+
+    .editable-div {
+        @extend .form-control;
+        width: 100%;
+        word-break: break-word;
+    }
+
+    .ant-col {
+        flex: 0 0 50%;
+    }
+
+    @media (max-width: 800px) {
+        .ant-col {
+          flex: 100%;
+        }
+    }
+}

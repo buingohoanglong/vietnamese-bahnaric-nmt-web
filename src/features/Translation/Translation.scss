@@ -1,39 +1,7 @@
-@import "~bootstrap/scss/bootstrap";
+// @import "~bootstrap/scss/bootstrap";
 
 .translation {
-    .ant-card-head-title {
-        height: 4em;
-        /* font-size: 1.5em; */
-    }
-
-    // textarea {
-    //     width: 100%;
-    //     border: 1px solid blue;
-    // }
-
-    .editable-div {
-        @extend .form-control;
-        // transition: all .3s,height 0s;
-        width: 100%;
-        // color: #000000d9;
-        // border: 1px solid #d9d9d9;
-        // border: 1px solid blue;
-        // border-radius: 2px;
-        // white-space: pre-wrap;
-        word-break: break-word;
-        // &:focus {
-        //     border: 2px solid #096dd9;
-        //     outline: none;
-        // }
-    }
-
-    .ant-col {
-        flex: 0 0 50%;
-    }
-
-    @media (max-width: 800px) {
-        .ant-col {
-          flex: 100%;
-        }
+    .ant-radio-button-wrapper {
+        margin-right: 10px;
     }
 }
