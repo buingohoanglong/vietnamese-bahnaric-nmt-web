@@ -1,16 +1,20 @@
-import { Col, Row, Menu, Divider, Image, Avatar } from 'antd';
-import React, { useState } from 'react';
+import { Col, Row, Menu, Image } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { MenuOutlined } from '@ant-design/icons';
 import logo from '../../assets/LogoBK.jpg';
 import './Header.scss';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
+    const location = useLocation();
     const [selectedTab, setSelectedTab] = useState('translation');
 
-    const handleClick = (e) => {
-        console.log(e.key)
-        setSelectedTab(e.key)
-    }
+    useEffect(() => {
+        let endIndex = location.pathname.indexOf('/', 1);
+        endIndex = endIndex < 0 ? location.pathname.length : endIndex;
+        const newSelectedTab = location.pathname.substring(1, endIndex);
+        setSelectedTab(newSelectedTab);
+    }, [location.pathname])
 
     return (
         <div className='header'>
@@ -35,18 +39,17 @@ const Header = () => {
                 <Col span={6}>
                     <Menu
                     mode='horizontal' 
-                    onClick={handleClick} 
                     selectedKeys={[selectedTab]}
                     expandIcon={<MenuOutlined />}
                     >
                         <Menu.Item key='translation'>
-                            Translation
+                            <Link to='/translation'>Translation</Link>
                         </Menu.Item>
                         <Menu.Item key='about'>
-                            About
+                            <Link to='/about'>About</Link>
                         </Menu.Item>
                         <Menu.Item key='contact'>
-                            Contact
+                            <Link to='/contact'>Contact</Link>
                         </Menu.Item>
                     </Menu>
                 </Col>

@@ -15,14 +15,10 @@
         height: 100%;
     }
     border-bottom: 1px solid #d9d9d9;
-    // .ant-menu {
-    //     background-color: #096dd9;
-    // }
-    // .ant-menu-item {
-    //     background-color: #096dd9;
-    //     color: white;
-    //     &:hover {
-    //         color: black;
-    //     }
-    // }
+
+    .ant-menu-item {
+        a {
+            text-decoration: none;
+        }
+    }
 }

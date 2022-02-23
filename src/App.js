@@ -1,7 +1,10 @@
-import { Col, Layout, Row } from 'antd';
+import { Col, Row } from 'antd';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import './App.css';
 import Translation from './features/Translation/Translation';
 import Header from './features/Header/Header';
+import About from './features/About/About';
+import Contact from './features/Contact/Contact';
 
 function App() {
   return (
@@ -12,7 +15,24 @@ function App() {
         <Row justify='center'>
           <Col span={20}>
             <div className='body'>
-              <Translation />
+              <Routes>
+                <Route 
+                  path='/translation/*' 
+                  element={<Translation />} 
+                />
+                <Route 
+                  path='/about/*' 
+                  element={<About />} 
+                />
+                <Route 
+                  path='/contact' 
+                  element={<Contact />} 
+                />
+                <Route 
+                  path='/*' 
+                  element={<Navigate to='/translation' />} 
+                />
+              </Routes>
             </div>
           </Col>
         </Row>

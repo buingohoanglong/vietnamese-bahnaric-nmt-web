@@ -1,6 +1,8 @@
 import React from 'react';
 import './FileTranslation.scss';
-import { Steps, Button, message, Card } from 'antd';
+import { Steps, Button, message, Card, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { AiOutlineUpload } from 'react-icons/ai';
 
 const { Step } = Steps;
 
@@ -31,6 +33,23 @@ const FileTranslation = () => {
       setCurrent(current - 1);
     };
 
+    const handleFileSelected = ({file, fileList, e}) => {
+        console.log(file)
+        console.log(fileList)
+        console.log(e)
+    }
+
+    const upload = (
+        <Upload
+            // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            onChange={handleFileSelected}
+            listType="picture"
+            maxCount={1}
+        >
+            <Button icon={<AiOutlineUpload size={'1.5em'} />}>Upload</Button>
+        </Upload>
+    );
+
     return (
         <div className='file-translation'>
             <Card title={
@@ -42,6 +61,7 @@ const FileTranslation = () => {
             }>
                 <div className="steps-content">
                     {steps[current].content}
+                    {/* {upload} */}
                 </div>
                 <div className="steps-action">
                     {current < steps.length - 1 && (
