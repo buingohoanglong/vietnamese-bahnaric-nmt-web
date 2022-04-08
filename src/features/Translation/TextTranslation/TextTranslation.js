@@ -1,14 +1,15 @@
 import { Button, Card, Col, message, Row, Select, Spin } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import './TextTranslation.scss';
-import { translateAPI } from '../../../api/api';
+import { textTranslateAPI } from '../../../api/api';
 
 const { Option } = Select
 
 const supportedModels = [
-    'Transformer',
+    'Combined',
+    'Loanformer',
     'PhoBERT-fused NMT',
-    'Loanformer'
+    'Transformer'
 ];
 
 const convertToText = (str = '') => {
@@ -117,7 +118,7 @@ const TextTranslation = () => {
     const handleTranslationBtnClicked = (e) => {
         e.preventDefault();
         setTranslating(true);
-        translateAPI(text, selectedModel)
+        textTranslateAPI(text, selectedModel)
             .then(response => {
             const result = response.data.ResultObj;
             const {src, tgt} = result;

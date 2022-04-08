@@ -1,86 +1,166 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FileTranslation.scss';
-import { Steps, Button, message, Card, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { AiOutlineUpload } from 'react-icons/ai';
+import { Button, message, Card, Upload, Select, Row, Col, Spin } from 'antd';
+import { AiOutlineUpload, AiOutlineDownload } from 'react-icons/ai';
+import { fileTranslateAPI } from '../../../api/api';
 
-const { Step } = Steps;
+const { Option } = Select
 
-const steps = [
-  {
-    title: 'Upload source file',
-    content: 'First-content',
-  },
-  {
-    title: 'Select model',
-    content: 'Second-content',
-  },
-  {
-    title: 'Download target file',
-    content: 'Last-content',
-  },
+const supportedModels = [
+    'Combined',
+    'Loanformer',
+    'PhoBERT-fused NMT',
+    'Transformer'
 ];
+
+var fileDownload = require('js-file-download');
 
 
 const FileTranslation = () => {
-    const [current, setCurrent] = React.useState(0);
-
-    const next = () => {
-      setCurrent(current + 1);
-    };
-  
-    const prev = () => {
-      setCurrent(current - 1);
-    };
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedModel, setSelectedModel] = useState(supportedModels[0]);
+    const [translating, setTranslating] = useState(false);
+    const [translatedData, setTranslatedData] = useState(null);
 
     const handleFileSelected = ({file, fileList, e}) => {
-        console.log(file)
-        console.log(fileList)
-        console.log(e)
+        console.log(file);
+        setSelectedFile(file.status !== 'removed' ? file : null);
     }
 
-    const upload = (
-        <Upload
-            // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            onChange={handleFileSelected}
-            listType="picture"
-            maxCount={1}
-        >
-            <Button icon={<AiOutlineUpload size={'1.5em'} />}>Upload</Button>
-        </Upload>
+    const handleBeforeUpload = (file) => {
+        const correctFileType = file.type === 'text/plain' || file.type === 'application/pdf';
+        if (!correctFileType) {
+          message.error('You can only upload .txt or .pdf file!');
+        }
+        return false;
+    }
+
+    const handleModelSelected = (model) => {
+        setSelectedModel(model);
+    }
+
+    const handleTranslationBtnClicked = (e) => {
+        e.preventDefault();
+        setTranslating(true);
+        fileTranslateAPI(selectedFile, selectedModel)
+            .then(response => {
+                const data = response.data;
+                console.log("Response");
+                console.log(data);
+                setTranslatedData({
+                    'filename': selectedFile.lastModified + selectedFile.name,
+                    'data': data
+                })
+            }).catch(error => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                    message.error(error.response.data.error);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);
+                    message.error('Server does not reponse !');
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    message.error(error.message);
+                }
+                // console.log(error.config);
+                setSelectedFile(null);
+            }).finally(() => {
+                setTranslating(false);
+            })
+    }
+
+    const handleDownload = () => {
+        fileDownload(translatedData.data, translatedData.filename);
+        setTranslatedData(null);
+        setSelectedFile(null);
+    }
+
+    const vietnameseCardTitle = (
+        <div>
+            <Row justify='space-between' align='middle'>
+                <Col span={8}>
+                    <div>Vietnamese</div>
+                </Col>
+                <Col span={8} style={{textAlign: 'center'}}>
+                    <Select 
+                        defaultValue={selectedModel}
+                        onChange={handleModelSelected}
+                        style={{margin: '0 auto'}}
+                    >
+                        {supportedModels.map((model) => 
+                            <Option key={model}>{model}</Option>
+                        )}
+                    </Select>
+                </Col>
+                <Col span={8}>
+                    <Button 
+                        disabled={translating || !selectedFile}
+                        type={'primary'} 
+                        style={{float: 'right'}}
+                        onClick={handleTranslationBtnClicked}
+                    >
+                        Translate
+                    </Button>
+                </Col>
+            </Row>
+        </div>
     );
+
+    const bahnaricCardTitle = 'Bahnaric';
 
     return (
         <div className='file-translation'>
-            <Card title={
-                <Steps current={current}>
-                    {steps.map(item => (
-                        <Step key={item.title} title={item.title} />
-                    ))}
-                </Steps>
-            }>
-                <div className="steps-content">
-                    {steps[current].content}
-                    {/* {upload} */}
-                </div>
-                <div className="steps-action">
-                    {current < steps.length - 1 && (
-                        <Button type="primary" onClick={() => next()}>
-                            Next
-                        </Button>
-                    )}
-                    {current === steps.length - 1 && (
-                        <Button type="primary" onClick={() => message.success('Processing complete!')}>
-                            Done
-                        </Button>
-                    )}
-                    {current > 0 && (
-                        <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-                            Previous
-                        </Button>
-                    )}
-                </div>
-            </Card>
+            <Row justify='center' wrap>
+                <Col>
+                    <Card title={vietnameseCardTitle}>
+                        <div className='file-translation--content'>
+                            <Upload
+                                onChange={handleFileSelected}
+                                beforeUpload={handleBeforeUpload}
+                                fileList={selectedFile ? [selectedFile] : []}
+                                disabled={translating}
+                                accept='.txt,.pdf'
+                                listType='text'
+                                maxCount={1}
+                            >
+                                <Button icon={<AiOutlineUpload size={'1.5em'} />}>Upload</Button>
+                            </Upload>
+                        </div>
+                    </Card>
+                </Col>
+                <Col>
+                    <Card title={bahnaricCardTitle}>
+                        <Spin 
+                            tip='Translating...'
+                            spinning={translating}
+                        >
+                            <div className='file-translation--content'>
+                                {
+                                    translatedData
+                                        ?   (<>
+                                                <Button 
+                                                    icon={<AiOutlineDownload size={'1.5em'} />}
+                                                    onClick={handleDownload}
+                                                >
+                                                    Download
+                                                </Button>
+                                                <div>{translatedData.filename}</div>
+                                            </>)
+                                        :   'Download target file here !'
+                                }
+                            </div>
+                        </Spin>
+                    </Card>
+                </Col>
+            </Row>
         </div>
     );
 }

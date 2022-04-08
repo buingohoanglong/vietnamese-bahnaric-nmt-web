@@ -8,13 +8,23 @@ const instance = axios.create({
     timeout: 500000,
 });
 
-const translateAPI = (text, model) => {
-    return instance.post('/translate', {
+const textTranslateAPI = (text, model) => {
+    return instance.post('/translate/text', {
         'text': text,
         'model': model
     })
 }
 
+const fileTranslateAPI = (file, model) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('model', model);
+    return instance.post('/translate/file', formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+    })
+}
+
 export {
-    translateAPI
+    textTranslateAPI,
+    fileTranslateAPI
 };

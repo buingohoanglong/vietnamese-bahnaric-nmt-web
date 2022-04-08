@@ -3,6 +3,25 @@
     min-height: 314px;
 
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    // justify-content: center;
+    // align-items: center;
+
+    &--section {
+        margin: 2em 2em 2em 2em;
+
+        &--header {
+            font-weight: 500;
+            font-size: 1.5em;
+            margin-bottom: 1em;
+        }
+
+        &--body {
+            &--paragraph {
+                text-align: justify;
+                margin-bottom: 1em;
+            }
+        
+        }
+    }
 }

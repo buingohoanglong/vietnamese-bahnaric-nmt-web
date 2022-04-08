@@ -1,17 +1,27 @@
+@import "~bootstrap/scss/bootstrap";
+
 .file-translation {
-    background-color: white;
-    min-height: 314px;
-    .steps-content {
-        min-height: 150px;
-        margin-top: 16px;
-        padding-top: 80px;
-        text-align: center;
-        background-color: #fafafa;
-        border: 1px dashed #e9e9e9;
-        border-radius: 2px;
-      }
-      
-    .steps-action {
-        margin-top: 24px;
+    .ant-card-head-title {
+        height: 4em;
+        /* font-size: 1.5em; */
+    }
+
+    &--content {
+        width: 100%;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ant-col {
+        flex: 0 0 50%;
+    }
+
+    @media (max-width: 800px) {
+        .ant-col {
+          flex: 100%;
+        }
     }
 }

@@ -5,6 +5,7 @@ import imageLong from '../../assets/buingohoanglong.png';
 import imagePhu from '../../assets/nguyenhuuthienphu.png';
 import imageTho from '../../assets/quanthanhtho.png';
 import imageTam from '../../assets/bangngocbaotam.png';
+import imageUser from '../../assets/user.png';
 
 const Contact = () => {
     return (
