@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const baseUrl = 'http://localhost:5000/'
-const baseUrl = 'https://vi-ba-nmt-api-proxy.herokuapp.com';
+const baseUrl = 'http://localhost:8000/'
+// const baseUrl = 'https://vi-ba-nmt-api-proxy.herokuapp.com';
 
 const instance = axios.create({
     baseURL: baseUrl,
@@ -24,7 +24,12 @@ const fileTranslateAPI = (file, model) => {
     })
 }
 
+const getModelsAPI = () => {
+    return instance.get('/models')
+}
+
 export {
     textTranslateAPI,
-    fileTranslateAPI
+    fileTranslateAPI,
+    getModelsAPI
 };

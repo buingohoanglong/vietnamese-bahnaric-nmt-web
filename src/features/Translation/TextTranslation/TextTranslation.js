@@ -1,16 +1,9 @@
 import { Button, Card, Col, message, Row, Select, Spin } from 'antd';
 import React, { useEffect, useState, useRef } from 'react';
 import './TextTranslation.scss';
-import { textTranslateAPI } from '../../../api/api';
+import { getModelsAPI, textTranslateAPI } from '../../../api/api';
 
 const { Option } = Select
-
-const supportedModels = [
-    'Combined',
-    'Loanformer',
-    'PhoBERT-fused NMT',
-    'Transformer'
-];
 
 const convertToText = (str = '') => {
     // Ensure string.
@@ -61,12 +54,42 @@ const convertToText = (str = '') => {
 
 const TextTranslation = () => {
     const [text, setText] = useState("");
-    const [selectedModel, setSelectedModel] = useState(supportedModels[0]);
+    const [supportedModels, setSupportedModels] = useState([]);
+    const [selectedModel, setSelectedModel] = useState(null);
     const [translatedText, setTranslatedText] = useState([]);
     const [translating, setTranslating] = useState(false);
 
     const srcRef = useRef(null);
     const tgtRef = useRef(null);
+
+    useEffect(() => {
+        getModelsAPI()
+            .then(response => {
+                const models = response.data.models;
+                console.log(models);
+                setSupportedModels(models);
+            }).catch(error => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                    message.error(error.response.data.error);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);
+                    message.error('Server does not reponse !');
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    message.error(error.message);
+                }
+                // console.log(error.config);
+            })
+    },[])
 
     useEffect(() => {
         updateHeight();
@@ -168,7 +191,8 @@ const TextTranslation = () => {
                 </Col>
                 <Col span={8} style={{textAlign: 'center'}}>
                     <Select 
-                        defaultValue={selectedModel}
+                        placeholder="Select a model"
+                        // defaultValue={selectedModel}
                         onChange={handleModelSelected}
                         style={{margin: '0 auto'}}
                     >
@@ -179,7 +203,7 @@ const TextTranslation = () => {
                 </Col>
                 <Col span={8}>
                     <Button 
-                        disabled={translating}
+                        disabled={translating || !selectedModel}
                         type={'primary'} 
                         style={{float: 'right'}}
                         onClick={handleTranslationBtnClicked}

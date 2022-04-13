@@ -1,26 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './FileTranslation.scss';
 import { Button, message, Card, Upload, Select, Row, Col, Spin } from 'antd';
 import { AiOutlineUpload, AiOutlineDownload } from 'react-icons/ai';
-import { fileTranslateAPI } from '../../../api/api';
+import { fileTranslateAPI, getModelsAPI } from '../../../api/api';
 
 const { Option } = Select
-
-const supportedModels = [
-    'Combined',
-    'Loanformer',
-    'PhoBERT-fused NMT',
-    'Transformer'
-];
 
 var fileDownload = require('js-file-download');
 
 
 const FileTranslation = () => {
     const [selectedFile, setSelectedFile] = useState(null);
-    const [selectedModel, setSelectedModel] = useState(supportedModels[0]);
+    const [supportedModels, setSupportedModels] = useState([]);
+    const [selectedModel, setSelectedModel] = useState(null);
     const [translating, setTranslating] = useState(false);
     const [translatedData, setTranslatedData] = useState(null);
+
+
+    useEffect(() => {
+        getModelsAPI()
+            .then(response => {
+                const models = response.data.models;
+                console.log(models);
+                setSupportedModels(models);
+            }).catch(error => {
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                    message.error(error.response.data.error);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);
+                    message.error('Server does not reponse !');
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                    message.error(error.message);
+                }
+                // console.log(error.config);
+            })
+    },[])
 
     const handleFileSelected = ({file, fileList, e}) => {
         console.log(file);
@@ -91,7 +115,8 @@ const FileTranslation = () => {
                 </Col>
                 <Col span={8} style={{textAlign: 'center'}}>
                     <Select 
-                        defaultValue={selectedModel}
+                        placeholder="Select a model"
+                        // defaultValue={selectedModel}
                         onChange={handleModelSelected}
                         style={{margin: '0 auto'}}
                     >
@@ -102,7 +127,7 @@ const FileTranslation = () => {
                 </Col>
                 <Col span={8}>
                     <Button 
-                        disabled={translating || !selectedFile}
+                        disabled={translating || !selectedFile || !selectedModel}
                         type={'primary'} 
                         style={{float: 'right'}}
                         onClick={handleTranslationBtnClicked}
