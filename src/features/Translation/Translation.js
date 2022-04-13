@@ -1,6 +1,6 @@
 import { Col, Radio, Row, Space } from 'antd';
-import React from 'react';
-import { useNavigate, Routes, Route, Navigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Routes, Route, Navigate, useLocation } from 'react-router';
 import './Translation.scss';
 import TextTranslation from './TextTranslation/TextTranslation';
 import { MdTranslate } from 'react-icons/md';
@@ -10,12 +10,20 @@ import FileTranslation from './FileTranslation/FileTranslation';
 
 const Translation = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const [currentSection, setCurrentSection] = useState('text');
 
     const handleSectionChange = (e) => {
-        console.log(e.target.value);
+        setCurrentSection(e.target.value);
         navigate(e.target.value);
     }
 
+    useEffect(() => {
+        let startIndex = location.pathname.lastIndexOf('/');
+        const currentSection = location.pathname.substring(startIndex + 1);
+        setCurrentSection(currentSection);
+    },[location.pathname])
 
     return (
         <div className='about'>
@@ -23,7 +31,7 @@ const Translation = () => {
                 <Col span={24}>
                     <Radio.Group 
                         onChange={handleSectionChange} 
-                        defaultValue="text" 
+                        value={currentSection} 
                     >
                         <Space style={{textAlign: 'center'}}>
                             <Radio.Button value="text" style={{minWidth: '90px'}}>

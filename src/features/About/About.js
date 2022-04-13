@@ -1,6 +1,6 @@
 import { Col, Radio, Row, Space } from 'antd';
-import React from 'react';
-import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import './About.scss';
 import Bahnaric from './Bahnaric/Bahnaric';
 import DataAugmentation from './DataAugmentation/DataAugmentation';
@@ -10,11 +10,20 @@ import References from './References/References';
 
 const About = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const [currentSection, setCurrentSection] = useState('bahnaric');
 
     const handleSectionChange = (e) => {
-        console.log(e.target.value);
+        setCurrentSection(e.target.value);
         navigate(e.target.value);
     }
+
+    useEffect(() => {
+        let startIndex = location.pathname.lastIndexOf('/');
+        const currentSection = location.pathname.substring(startIndex + 1);
+        setCurrentSection(currentSection);
+    },[location.pathname])
 
 
     return (
@@ -23,7 +32,7 @@ const About = () => {
                 <Col span={24}>
                     <Radio.Group 
                         onChange={handleSectionChange} 
-                        defaultValue="bahnaric" 
+                        value={currentSection}
                     >
                         <Space style={{textAlign: 'center'}}>
                             <Radio.Button value="bahnaric" style={{minWidth: '90px'}}>
