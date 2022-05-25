@@ -23,6 +23,7 @@ const FileTranslation = () => {
                 const models = response.data.models;
                 console.log(models);
                 setSupportedModels(models);
+                setSelectedModel(models[0]);
             }).catch(error => {
                 if (error.response) {
                     // The request was made and the server responded with a status code
@@ -114,16 +115,16 @@ const FileTranslation = () => {
                     <div>Vietnamese</div>
                 </Col>
                 <Col span={8} style={{textAlign: 'center'}}>
-                    <Select 
+                    {selectedModel && <Select 
                         placeholder="Select a model"
-                        // defaultValue={selectedModel}
+                        defaultValue={selectedModel}
                         onChange={handleModelSelected}
                         style={{margin: '0 auto'}}
                     >
                         {supportedModels.map((model) => 
                             <Option key={model}>{model}</Option>
                         )}
-                    </Select>
+                    </Select>}
                 </Col>
                 <Col span={8}>
                     <Button 
