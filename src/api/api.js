@@ -28,8 +28,17 @@ const getModelsAPI = () => {
     return instance.get('/models')
 }
 
+const ttsAPI = (text) => {
+    return instance.post('/tts/speak', {
+        'text': text
+    }, {
+        baseURL: 'http://www.ura.hcmut.edu.vn'
+    })
+}
+
 export {
     textTranslateAPI,
     fileTranslateAPI,
-    getModelsAPI
+    getModelsAPI,
+    ttsAPI
 };
